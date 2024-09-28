@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from huggingface_hub import hf_hub_download
 from streamlit_extras.let_it_rain import rain
-
+import copy
 import utilities
 import requests
 
@@ -93,7 +93,7 @@ primary, secondary = st.columns(2)
 if primary.button("Загрузить датасет",type="primary"):
     if dataset_options=="Только авторизованные":
             st.session_state['data'] = load_authorized_data()
-            st.session_state['dataset']=load_authorized_data()
+            st.session_state['dataset'] = copy.deepcopy(st.session_state['data'])
             st.session_state['dataset_type']='authorized'
     elif dataset_options=="Только неавторизованные":
             st.session_state['data'] = load_unauthorized_data()
