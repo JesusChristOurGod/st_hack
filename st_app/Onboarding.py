@@ -4,7 +4,7 @@ from huggingface_hub import hf_hub_download
 from streamlit_extras.let_it_rain import rain
 
 import utilities
-
+import requests
 
 @st.cache_data
 def load_all_data():
@@ -40,7 +40,7 @@ def load_authorized_data():
     #videos = pd.read_csv('data/video_info_v2.csv')
     videos = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='video_info_v2.csv', repo_type='dataset'))
     #targets = pd.read_csv('data/train_targets.csv')
-    targets = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='targets.csv', repo_type='dataset'))
+    targets = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='train_targets.csv', repo_type='dataset'))
 
     videos['duration']=videos['duration']/1000
     train_events['authorized'] = True
