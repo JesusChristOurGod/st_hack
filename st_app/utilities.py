@@ -84,7 +84,7 @@ def show_data_info():
     st.dataframe(description_df)
 
 
-def add_coordinates(data, coordinates_file="region_coordinates.json"):
+def add_coordinates(data, coordinates_file="st_app/region_coordinates.json"):
     # Load the coordinates from the JSON file
     with open(coordinates_file, 'r') as file:
         region_coordinates = json.load(file)
