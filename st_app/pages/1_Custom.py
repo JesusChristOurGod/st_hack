@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import utilities
 import plotly.express as px
+import warnings
+warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
 @st.cache_data
 def filter_dataset(data, gender=None, category=None, age=None, device=None,
                    client_type=None, os=None, browser=None, region=None,
