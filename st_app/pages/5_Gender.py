@@ -48,7 +48,8 @@ def male_female_scatterplot(data, x_axis, y_axis):
         data_frame=data,
         x=x_axis,
         y=y_axis,
-        color='sex',  # Color by the 'sex' column
+        color='sex',
+        opacity=0.5,# Color by the 'sex' column
         color_discrete_map={'female': 'pink', 'male': 'cyan'},  # Color mapping
         title=f'Scatter Plot of {y_axis} vs {x_axis}',
         labels={'sex': 'Gender'},
