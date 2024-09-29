@@ -53,7 +53,7 @@ def plot_video_watchtime_per_day(data):
     # Create a bar plot using Plotly Express
     fig = px.bar(daily_watchtime, x='event_date', y='total_watchtime',
                  labels={'event_date': 'Day ', 'total_watchtime': 'Total Video Watchtime (seconds)'},
-                 title="Total Video Duration for Each Day")
+                 title="Total Video Watchtime for Each Day")
 
     # Update the bar colors to repeat every 7 days
     fig.update_traces(marker_color=color_sequence)
