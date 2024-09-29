@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_extras.metric_cards import style_metric_cards
 import utilities
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 
 def active_user_metrics(data):
@@ -80,6 +81,18 @@ mau_col.bar_chart(monthly_data.set_index('event_date'))
 
 user_video_counts = data.groupby('viewer_uid').size().reset_index(name='video_count')
 fig = px.histogram(user_video_counts, x='video_count', nbins=100, title='Distribution of Watched Videos per User')
+trend_data = user_video_counts['video_count'].value_counts().sort_index().rolling(window=5).mean()
+
+# Add trendline using Scatter plot
+fig.add_trace(go.Scatter(
+    x=trend_data.index,
+    y=trend_data,
+    mode='lines',
+    name='Trendline',
+    line=dict(color='red', width=2)
+))
+
+fig.update_xaxes(range=[0,100])
 
 # Show the figure in Streamlit or Jupyter Notebook
 st.plotly_chart(fig)
