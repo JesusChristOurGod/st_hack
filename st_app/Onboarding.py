@@ -9,7 +9,6 @@ import utilities
 
 #В первых трех функциях необходимо раскоментировать и закоментировать код, если есть желание не ждать загрузки датасета, а прочитать его из файла в директории /data
 
-@st.cache_data
 def load_all_data():
     #train_events = pd.read_csv('data/train_events.csv', sep=',')
     train_events = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='train_events.csv', repo_type='dataset'))
@@ -36,7 +35,6 @@ def load_all_data():
     data['video_count'] = data.groupby('viewer_uid')['event_timestamp'].transform('size')
     return data
 
-@st.cache_data
 def load_authorized_data():
     #train_events = pd.read_csv('data/train_events.csv', sep=',')
     train_events = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='train_events.csv', repo_type='dataset'))
@@ -58,7 +56,7 @@ def load_authorized_data():
     data['videos_per_day'] = data.groupby(['viewer_uid', 'event_date'])['event_timestamp'].transform('size')
     data['video_count'] = data.groupby('viewer_uid')['event_timestamp'].transform('size')
     return data
-@st.cache_data
+
 def load_unauthorized_data():
     #videos = pd.read_csv('data/video_info_v2.csv')
     videos = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='video_info_v2.csv', repo_type='dataset'))
