@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 from huggingface_hub import hf_hub_download
 from streamlit_extras.let_it_rain import rain
-
+import warnings
+warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
 import utilities
 
 
