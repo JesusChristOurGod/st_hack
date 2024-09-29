@@ -15,5 +15,6 @@ chart_data = data_with_coordinates.groupby(['region', 'lat', 'lon']).size().rese
 chart_data.rename(columns={'latitude': 'lat', 'longitude': 'lon'}, inplace=True)
 
 # Preview the data to make sure 'latitude' and 'longitude' are added
-st.write(chart_data)
+st.write("# География пользователей")
 utilities.exmaple_map(chart_data, weight="entries")
+st.write(chart_data)
