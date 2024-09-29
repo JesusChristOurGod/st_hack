@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import utilities
+import plotly.express as px
 @st.cache_data
 def filter_dataset(data, gender=None, category=None, age=None, device=None,
                    client_type=None, os=None, browser=None, region=None,
@@ -106,10 +107,63 @@ if st.button("Применить фильтры"):
     )
     data = st.session_state['data']
 
-    st.write(f"Number of rows after filtering: {data.shape[0]}")
+    with st.expander("Просмотреть ифнормацию о датасете"):
+        st.write(f"Number of rows after filtering: {data.shape[0]}")
 
-    if data.empty:
-        st.write("Отфильтрованный датасет пуст. Попробуйте изменить фильтры.")
-    else:
-        st.dataframe(data.describe())
-        utilities.show_data_info()
+        if data.empty:
+            st.write("Отфильтрованный датасет пуст. Попробуйте изменить фильтры.")
+        else:
+            st.dataframe(data.describe())
+            utilities.show_data_info()
+first, second, last = st.columns(3)
+x=first.selectbox("Ось X для ScatterPlot", ["age","total_watchtime","duration", "videos_per_day","video_count"])
+y=second.selectbox("Ось Y для ScatterPlot", ["age","total_watchtime","duration", "videos_per_day","video_count"])
+sep = last.selectbox("Разделять данные Гистограммы и ScatterPlot по", ["region", "ua_device_type", "ua_client_type","ua_os","ua_client_name","authorized","category","age_class", "sex"])
+
+
+def plot_stacked_bar_chart(data, y_column, group_column):
+    # Ensure 'event_date' is in datetime format if it's not already
+    if not pd.api.types.is_datetime64_any_dtype(data['event_date']):
+        data['event_date'] = pd.to_datetime(data['event_date'])
+
+    # Group by 'event_date' and the grouping column, and count the occurrences
+    grouped_data = data.groupby(['event_date', group_column])[y_column].count().reset_index()
+
+    # Create a stacked bar chart using Plotly Express
+    fig = px.bar(
+        grouped_data,
+        x='event_date',
+        y=y_column,
+        color=group_column,
+        labels={'event_date': 'Date', y_column: 'Number of Entries'},
+        title=f"Stacked Bar Chart for {y_column} Grouped by {group_column}"
+    )
+
+    # Update layout to show only relevant days on x-axis
+    fig.update_layout(barmode='stack', xaxis={'type': 'category'})
+
+    # Display the plot in Streamlit
+    st.plotly_chart(fig)
+def plot_scatter_chart(data, x_column, y_column, group_column):
+    # Ensure 'event_date' is in datetime format if it's being used as the x_column
+    if x_column == 'event_date' and not pd.api.types.is_datetime64_any_dtype(data[x_column]):
+        data[x_column] = pd.to_datetime(data[x_column])
+
+    # Create a scatter plot using Plotly Express
+    fig = px.scatter(
+        data,
+        x=x_column,
+        y=y_column,
+        color=group_column,
+        opacity=0.6,
+        labels={x_column: x_column.capitalize(), y_column: y_column.capitalize(), group_column: group_column.capitalize()},
+        title=f"Scatter Plot for {y_column} vs {x_column} Grouped by {group_column}"
+    )
+
+    # Update layout for the chart
+    fig.update_layout(legend_title=group_column.capitalize())
+
+    # Display the plot in Streamlit
+    st.plotly_chart(fig)
+plot_scatter_chart(data, x, y, sep)
+plot_stacked_bar_chart(data, y, sep)
