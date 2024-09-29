@@ -2,21 +2,23 @@ import streamlit as st
 import pandas as pd
 from huggingface_hub import hf_hub_download
 from streamlit_extras.let_it_rain import rain
-import copy
+
 import utilities
-import requests
+
+
+#В первых трех функциях необходимо раскоментировать и закоментировать код, если есть желание не ждать загрузки датасета, а прочитать его из файла в директории /data
 
 @st.cache_data
 def load_all_data():
-    train_events = pd.read_csv('data/train_events.csv', sep=',')
-    #train_events = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='train_events.csv', repo_type='dataset'))
+    #train_events = pd.read_csv('data/train_events.csv', sep=',')
+    train_events = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='train_events.csv', repo_type='dataset'))
 
-    videos = pd.read_csv('data/video_info_v2.csv')
-    #videos = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='video_info_v2.csv', repo_type='dataset'))
-    unauthorized = pd.read_csv('data/all_events.csv')
-    #unauthorized = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='all_events.csv', repo_type='dataset'))
-    targets = pd.read_csv('data/train_targets.csv')
-    #targets = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='targets.csv', repo_type='dataset'))
+    #videos = pd.read_csv('data/video_info_v2.csv')
+    videos = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='video_info_v2.csv', repo_type='dataset'))
+    #unauthorized = pd.read_csv('data/all_events.csv')
+    unauthorized = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='all_events.csv', repo_type='dataset'))
+    #targets = pd.read_csv('data/train_targets.csv')
+    targets = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='train_targets.csv', repo_type='dataset'))
     videos['duration']=videos['duration']/1000
     train_events['authorized'] = True
     unauthorized['authorized'] = False
@@ -57,10 +59,10 @@ def load_authorized_data():
     return data
 @st.cache_data
 def load_unauthorized_data():
-    videos = pd.read_csv('data/video_info_v2.csv')
-    #videos = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='video_info_v2.csv', repo_type='dataset'))
-    unauthorized = pd.read_csv('data/all_events.csv')
-    #unauthorized = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='all_events.csv', repo_type='dataset'))
+    #videos = pd.read_csv('data/video_info_v2.csv')
+    videos = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='video_info_v2.csv', repo_type='dataset'))
+    #unauthorized = pd.read_csv('data/all_events.csv')
+    unauthorized = pd.read_csv(hf_hub_download(repo_id="seniichev/nationwide-2024", filename='all_events.csv', repo_type='dataset'))
     videos['duration']=videos['duration']/1000
     unauthorized['authorized'] = False
     data = pd.merge(unauthorized, videos, on='rutube_video_id', how="outer")
@@ -82,7 +84,7 @@ st.set_page_config(
 
 )
 
-st.write("# Добро пожаловать в нашу EDA")
+st.write("# Добро пожаловать в интерактивный DashBBBBoard")
 dataset_options = st.radio(
     "На каком датасете необходимо построить анализ",
     ["Только авторизованные", "Только неавторизованные", "Все записи"]
@@ -93,7 +95,7 @@ primary, secondary = st.columns(2)
 if primary.button("Загрузить датасет",type="primary"):
     if dataset_options=="Только авторизованные":
             st.session_state['data'] = load_authorized_data()
-            st.session_state['dataset'] = copy.deepcopy(st.session_state['data'])
+            st.session_state['dataset']=load_authorized_data()
             st.session_state['dataset_type']='authorized'
     elif dataset_options=="Только неавторизованные":
             st.session_state['data'] = load_unauthorized_data()
