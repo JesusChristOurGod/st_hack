@@ -6,6 +6,12 @@ import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
 import utilities
 
+hide_github_icon = """
+#GithubIcon {
+  visibility: hidden;
+}
+"""
+st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 #В первых трех функциях необходимо раскоментировать и закоментировать код, если есть желание не ждать загрузки датасета, а прочитать его из файла в директории /data
 
